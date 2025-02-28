@@ -3,40 +3,37 @@ using UnityEngine.UI;
 
 public class CombinationInput : MonoBehaviour
 {
-    public Text comboText;  // UI'da kombinasyon göstermek için
-    public float comboTime = 2f;  // Her bir tuþ için verilen süre
-    private string correctCombo = "WASD";  // Doðru kombinasyon
+    public Text comboText;
+    public float comboTime = 2f;
+    private string correctCombo = "WASD";
     private float timer;
-    private int currentComboIndex = 0;  // Sýradaki beklenen tuþun indexi
+    private int currentComboIndex = 0;
 
-    private Animator animator;  // Karakterin Animator bileþeni
-    public int health = 100;  // Oyuncunun saðlýðý
-    private bool isComboActive = false;  // Kombinasyon baþladý mý?
+    private Animator animator;
+    public int health = 100;
+    private bool isComboActive = false;
+    private bool comboCompleted = false;
 
     void Start()
     {
         animator = GetComponent<Animator>();
         timer = comboTime;
-        comboText.text = "SHAKE IT UP OR...";  // Ýlk mesaj
+        comboText.text = "SHAKE IT UP OR...";
     }
 
     void Update()
     {
-        // Eðer kombinasyon aktifse, zaman sayacý iþler
-        if (isComboActive)
+        if (isComboActive && !comboCompleted)
         {
             timer -= Time.deltaTime;
-
-            // Eðer süre biterse, Victory animasyonunu anýnda kes ve Idle'a dön
             if (timer <= 0)
             {
                 comboText.text = "TIME'S UP!";
-                HealthChange(-10);  // Saðlýk azalt
+                HealthChange(-10);
                 ResetToIdle();
             }
         }
 
-        // Tuþ giriþlerini kontrol et
         if (currentComboIndex < correctCombo.Length)
         {
             if (Input.GetKeyDown(KeyCode.W)) CheckInput("W");
@@ -48,33 +45,30 @@ public class CombinationInput : MonoBehaviour
 
     void CheckInput(string key)
     {
-        // Eðer kombinasyon daha önce baþlamadýysa ve ilk tuþa basýldýysa, Victory animasyonu baþlat
         if (!isComboActive && key == correctCombo[0].ToString())
         {
-            animator.Play("Victory", 0, 0f);  // Victory animasyonunu baþlat (SIFIRDAN)
+            animator.Play("Victory", 0, 0f);
             isComboActive = true;
         }
 
-        // Eðer doðru tuþa bastýysa
         if (key == correctCombo[currentComboIndex].ToString())
         {
             currentComboIndex++;
-            timer = comboTime;  // Süreyi yenile
+            timer = comboTime;
             comboText.text = "Success: " + currentComboIndex + "/" + correctCombo.Length;
 
-            // Kombinasyon tamamlandýðýnda saðlýk kazan
             if (currentComboIndex == correctCombo.Length)
             {
                 comboText.text = "COMBO SUCCESS!";
-                HealthChange(10);  // Saðlýk artýr
-                ResetToIdle();  // Victory bitti, tekrar Idle'a dön
+                HealthChange(10);
+                comboCompleted = true;
             }
         }
-        else  // Yanlýþ tuþ basýldýysa Victory anýnda durmalý ve Idle'a geçmeli
+        else
         {
             comboText.text = "WRONG COMBO!";
-            HealthChange(-10);  // Saðlýk azalt
-            ResetToIdle();  // Victory iptal, anýnda Idle'a geç
+            HealthChange(-10);
+            ResetToIdle();
         }
     }
 
@@ -86,9 +80,11 @@ public class CombinationInput : MonoBehaviour
 
     void ResetToIdle()
     {
-        currentComboIndex = 0;  // Kombinasyonu sýfýrla
-        timer = comboTime;  // Zamaný sýfýrla
-        isComboActive = false;  // Kombinasyonu sýfýrla
-        animator.Play("Idle", 0, 0f);  // ANÝMASYONU ANINDA IDLE'A GEÇÝR
+        if (comboCompleted) return;
+
+        currentComboIndex = 0;
+        timer = comboTime;
+        isComboActive = false;
+        animator.Play("Idle", 0, 0f);
     }
 }

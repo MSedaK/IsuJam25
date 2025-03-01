@@ -7,6 +7,7 @@ public class CharacterAttack : MonoBehaviour
 {
     public GameObject sphereA_Prefab;
     public GameObject sphereB_Prefab;
+    public GroundSlash groundSlashPrefab; 
     public Transform firePoint;
     public float stoneSpeed = 10f;
     private Animator animator;
@@ -18,37 +19,58 @@ public class CharacterAttack : MonoBehaviour
     public Image strongAttackImage;
     public float fadeDuration = 1.5f;
 
-    private bool isStrongUnlocked = false; 
-    private bool isStrongUsed = false; 
+    private bool isStrongUnlocked = false;
+    private bool isStrongUsed = false;
+
+    public Transform cameraTransform;
+    private Vector3 originalCameraPosition;
+    public float cameraShakeAmount = 0.2f;
+    public float shakeDuration = 0.5f;
 
     void Start()
     {
         animator = GetComponent<Animator>();
-        UpdateSkillUI(); 
+        if (cameraTransform == null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
+
+        originalCameraPosition = cameraTransform.position;
+        UpdateSkillUI();
     }
 
     void Update()
     {
         if (gameObject.CompareTag("CharacterA"))
         {
-            if (Input.GetKeyDown(KeyCode.E)) StartAttack(1, "AttackNormal", sphereA_Prefab, "CharacterB", normalAttackImage);
-            if (Input.GetKeyDown(KeyCode.Q) && isStrongUnlocked) StartAttack(3, "AttackStrong", sphereA_Prefab, "CharacterB", strongAttackImage);
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                FireGroundSlash(); 
+            }
+
+            if (Input.GetKeyDown(KeyCode.Q) && isStrongUnlocked && !isStrongUsed)
+            {
+                StartAttack(3, "AttackStrong", sphereA_Prefab, "CharacterB", strongAttackImage, true);
+            }
         }
         else if (gameObject.CompareTag("CharacterB"))
         {
-            if (Input.GetKeyDown(KeyCode.K)) StartAttack(1, "AttackNormal", sphereB_Prefab, "CharacterA", normalAttackImage);
-            if (Input.GetKeyDown(KeyCode.L) && isStrongUnlocked) StartAttack(3, "AttackStrong", sphereB_Prefab, "CharacterA", strongAttackImage);
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                StartAttack(1, "AttackNormal", sphereB_Prefab, "CharacterA", normalAttackImage);
+            }
+            if (Input.GetKeyDown(KeyCode.L) && isStrongUnlocked && !isStrongUsed)
+            {
+                StartAttack(3, "AttackStrong", sphereB_Prefab, "CharacterA", strongAttackImage, true);
+            }
         }
     }
 
-    void StartAttack(int stoneCount, string animationName, GameObject stonePrefab, string target, Image skillImage)
+    void StartAttack(int stoneCount, string animationName, GameObject stonePrefab, string target, Image skillImage, bool isStrong = false)
     {
         queuedStones = stoneCount;
         currentStonePrefab = stonePrefab;
         targetTag = target;
-
-        Debug.Log(gameObject.name + " Attack Triggered: " + animationName);
-
         animator.SetTrigger(animationName);
 
         if (skillImage != null)
@@ -56,22 +78,16 @@ public class CharacterAttack : MonoBehaviour
             StartCoroutine(FadeSkillIcon(skillImage));
         }
 
-        if (animationName == "AttackStrong")
+        if (isStrong)
         {
             isStrongUsed = true;
+            StartCoroutine(CameraShakeEffect());
+            UpdateSkillUI();
         }
     }
 
     public void FireStones()
     {
-        Debug.Log(gameObject.name + " FireStones Called!");
-
-        if (queuedStones <= 0 || currentStonePrefab == null)
-        {
-            Debug.LogWarning("No stones to fire or prefab is missing!");
-            return;
-        }
-
         for (int i = 0; i < queuedStones; i++)
         {
             GameObject stone = Instantiate(currentStonePrefab, firePoint.position, firePoint.rotation);
@@ -80,11 +96,6 @@ public class CharacterAttack : MonoBehaviour
             if (rb != null)
             {
                 rb.velocity = transform.forward * stoneSpeed;
-                Debug.Log(gameObject.name + " Fired Stone!");
-            }
-            else
-            {
-                Debug.LogError("Rigidbody missing on stone prefab!");
             }
 
             Stone stoneScript = stone.GetComponent<Stone>();
@@ -96,6 +107,37 @@ public class CharacterAttack : MonoBehaviour
         queuedStones = 0;
     }
 
+    void FireGroundSlash()
+    {
+        if (groundSlashPrefab != null && firePoint != null)
+        {
+            animator.SetTrigger("AttackNormal"); 
+
+            GroundSlash newSlash = Instantiate(groundSlashPrefab, firePoint.position, Quaternion.identity);
+            newSlash.Initialize(firePoint); 
+
+            Debug.Log(gameObject.name + " used GroundSlash!"); 
+        }
+    }
+
+    IEnumerator CameraShakeEffect()
+    {
+        Debug.Log("Strong Attack - Camera Shake Started!");
+
+        float elapsed = 0f;
+        while (elapsed < shakeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float x = Random.Range(-cameraShakeAmount, cameraShakeAmount);
+            float y = Random.Range(-cameraShakeAmount, cameraShakeAmount);
+
+            cameraTransform.position += new Vector3(x, y, 0);
+            yield return null;
+        }
+
+        cameraTransform.position = originalCameraPosition;
+        Debug.Log("Camera Reset to Default.");
+    }
 
     IEnumerator FadeSkillIcon(Image skillImage)
     {
@@ -111,19 +153,17 @@ public class CharacterAttack : MonoBehaviour
     public void UnlockStrongAttack()
     {
         isStrongUnlocked = true;
-        isStrongUsed = false; 
+        isStrongUsed = false;
         UpdateSkillUI();
         Debug.Log(gameObject.name + " unlocked Strong Attack!");
     }
 
     public void ResetStrongAttack()
     {
-        if (!isStrongUsed) 
-        {
-            isStrongUnlocked = false;
-            UpdateSkillUI();
-            Debug.Log(gameObject.name + " lost Strong Attack due to inactivity!");
-        }
+        isStrongUnlocked = false;
+        isStrongUsed = false;
+        UpdateSkillUI();
+        Debug.Log(gameObject.name + " lost Strong Attack due to new combo phase!");
     }
 
     void UpdateSkillUI()
@@ -131,7 +171,7 @@ public class CharacterAttack : MonoBehaviour
         if (strongAttackImage != null)
         {
             Color color = strongAttackImage.color;
-            color.a = isStrongUnlocked ? 1f : 0.3f;
+            color.a = (isStrongUnlocked && !isStrongUsed) ? 1f : 0.3f;
             strongAttackImage.color = color;
         }
     }

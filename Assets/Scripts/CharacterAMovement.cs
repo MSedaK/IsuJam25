@@ -24,7 +24,7 @@ public class CharacterAMovement : MonoBehaviour
 
     void Update()
     {
-        if (!isComboActive)
+        if (!isComboActive) 
         {
             float moveX = 0f;
             float moveZ = 0f;
@@ -66,6 +66,14 @@ public class CharacterAMovement : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
     }
 
-    public void StartCombo() => isComboActive = true;
-    public void EndCombo() => isComboActive = false;
+    public void StartCombo()
+    {
+        isComboActive = true;
+        animator.SetBool("isWalking", false);
+    }
+
+    public void EndCombo()
+    {
+        isComboActive = false;
+    }
 }

@@ -17,6 +17,8 @@ public class PlayerHealth : MonoBehaviour
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
         Debug.Log(gameObject.name + " has " + currentHealth + " health left.");
         UpdateHealthUI();
 
@@ -24,6 +26,13 @@ public class PlayerHealth : MonoBehaviour
         {
             Die();
         }
+    }
+
+    public void RestoreFullHealth()
+    {
+        currentHealth = maxHealth;
+        UpdateHealthUI();
+        Debug.Log(gameObject.name + " fully healed!");
     }
 
     void UpdateHealthUI()
@@ -42,11 +51,11 @@ public class PlayerHealth : MonoBehaviour
 
         if (gameObject.CompareTag("CharacterA"))
         {
-            GameManager.instance.AddScore("CharacterB"); 
+            GameManager.instance.AddScore("CharacterB");
         }
         else if (gameObject.CompareTag("CharacterB"))
         {
-            GameManager.instance.AddScore("CharacterA"); 
+            GameManager.instance.AddScore("CharacterA");
         }
 
         gameObject.SetActive(false);
@@ -57,5 +66,10 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
         UpdateHealthUI();
+    }
+
+    public int GetHealth()
+    {
+        return currentHealth;
     }
 }

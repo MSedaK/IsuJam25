@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -6,25 +6,38 @@ using TMPro;
 public class CombinationInput : MonoBehaviour
 {
     public TMP_Text comboText;
-    public float comboTime = 2f;
-    private string correctCombo = "WASD";
+    public float comboTime = 10f;
     private float timer;
     private int currentComboIndex = 0;
 
-    private Animator animator;
-    public int health = 100;
     private bool isComboActive = false;
     private bool comboCompleted = false;
 
-    private CharacterMovement characterMovement;
+    private CharacterAMovement characterAMovement;
+    private CharacterBMovement characterBMovement;
     private CombinationUI combinationUI;
+    private PlayerHealth playerHealth;
+    private Animator animator; 
+
+    private string[] combosA = { "WASD", "DSAW", "AWDS", "SDWA" };
+    private string[] combosB = { "↑↓←→", "→←↓↑", "↓→↑←", "←↑→↓" };
+    private string currentCombo;
 
     void Start()
     {
-        animator = GetComponent<Animator>();
-        characterMovement = GetComponent<CharacterMovement>();
         combinationUI = FindObjectOfType<CombinationUI>();
-        timer = comboTime;
+        playerHealth = GetComponent<PlayerHealth>();
+        animator = GetComponent<Animator>();
+
+        if (CompareTag("CharacterA"))
+        {
+            characterAMovement = GetComponent<CharacterAMovement>();
+        }
+        else if (CompareTag("CharacterB"))
+        {
+            characterBMovement = GetComponent<CharacterBMovement>();
+        }
+
         comboText.text = "";
     }
 
@@ -33,61 +46,130 @@ public class CombinationInput : MonoBehaviour
         if (isComboActive && !comboCompleted)
         {
             timer -= Time.deltaTime;
+
+            if (Input.anyKeyDown)
+            {
+                foreach (KeyCode key in System.Enum.GetValues(typeof(KeyCode)))
+                {
+                    if (Input.GetKeyDown(key))
+                    {
+                        string keyPressed = key.ToString();
+                        Debug.Log("Pressed: " + keyPressed);
+                        CheckInput(keyPressed);
+                    }
+                }
+            }
+
             if (timer <= 0)
             {
                 Debug.Log("Combo Time Expired - Resetting");
                 comboText.text = "<color=red>TIME'S UP!</color>";
-                HealthChange(-10);
+                ApplyHealthChange(-10);
                 ResetToIdle();
             }
         }
     }
 
-    void StartCombo()
+    public void StartCombo(int comboLevel)
     {
         isComboActive = true;
-        characterMovement.StartCombo();
-        combinationUI.StartCombo();
+        comboCompleted = false;
+        timer = comboTime;
+        currentComboIndex = 0;
+
+        string comboA = combosA[comboLevel];
+        string comboB = combosB[comboLevel];
+
+        combinationUI.StartCombo(comboA, comboB);
+
+        if (CompareTag("CharacterA"))
+        {
+            characterAMovement.StartCombo();
+            currentCombo = comboA;
+        }
+        else if (CompareTag("CharacterB"))
+        {
+            characterBMovement.StartCombo();
+            currentCombo = comboB;
+        }
+
         comboText.text = "<color=yellow>COMBO STARTED!</color>";
-        Debug.Log("Combo Triggered!");
+        Debug.Log($"Combo {comboLevel + 1} Triggered! Required: {currentCombo}");
+
+        Invoke("EndCombo", comboTime);
     }
 
-    void EndComboSequence()
+    public void EndCombo()
     {
-        Invoke("ResetToIdle", 1f);
+        if (!isComboActive) return;
+
+        isComboActive = false;
+        comboCompleted = false;
+        timer = comboTime;
+        comboText.text = "";
+
+        if (CompareTag("CharacterA")) characterAMovement.EndCombo();
+        if (CompareTag("CharacterB")) characterBMovement.EndCombo();
+
+        combinationUI.EndCombo();
+        Debug.Log("Combo Ended!");
+    }
+
+    public void CheckInput(string input)
+    {
+        if (!isComboActive || comboCompleted) return;
+
+        string expectedKey = currentCombo[currentComboIndex].ToString().ToUpper();
+        string inputKey = input.ToUpper();
+
+        if (expectedKey == inputKey)
+        {
+            Debug.Log($"Correct Input: {inputKey}");
+            currentComboIndex++;
+
+            if (currentComboIndex == currentCombo.Length)
+            {
+                comboCompleted = true;
+                Debug.Log("Combo Completed Successfully!");
+                comboText.text = "<color=green>COMBO SUCCESS!</color>";
+                ApplyHealthChange(100);
+                PlayVictoryAnimation(); 
+                EndCombo();
+            }
+        }
+        else
+        {
+            Debug.Log($"Wrong Key! Expected: {expectedKey}, Got: {inputKey}");
+            ApplyHealthChange(-10);
+        }
+    }
+
+    void ApplyHealthChange(int amount)
+    {
+        if (amount > 0 && !comboCompleted) return;
+
+        playerHealth.TakeDamage(-amount);
+        comboText.text += $"\n<color=yellow>Health: {playerHealth.GetHealth()}</color>";
+        Debug.Log($"Health Changed: {playerHealth.GetHealth()}");
     }
 
     void ResetToIdle()
     {
         if (comboCompleted) return;
-
-        isComboActive = false;
-        characterMovement.EndCombo();
-        combinationUI.EndCombo();
-        comboText.text = "";
-        Debug.Log("Combo Ended - Movement Restored");
+        EndCombo();
     }
 
-    private void OnTriggerEnter(Collider other)
+    void PlayVictoryAnimation()
     {
-        if (other.CompareTag("ComboTrigger") && !isComboActive)
+        if (animator != null)
         {
-            StartCombo();
+            animator.ResetTrigger("Victory"); 
+            animator.Play("Victory", -1, 0f); 
+            Debug.Log("Victory Animation Triggered Instantly!");
         }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("ComboTrigger") && isComboActive)
+        else
         {
-            ResetToIdle();
+            Debug.LogWarning("Animator component not found!");
         }
-    }
-
-    void HealthChange(int amount)
-    {
-        health += amount;
-        comboText.text += "\n<color=yellow>Health: " + health + "</color>";
-        Debug.Log("Health Changed: " + health);
     }
 }

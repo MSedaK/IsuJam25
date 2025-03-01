@@ -22,6 +22,10 @@ public class GameManager : MonoBehaviour
     public Transform spawnPointA;
     public Transform spawnPointB;
 
+    private bool comboActive = false;
+    private int comboIndex = 0;
+    private List<int> comboStages = new List<int> { 5, 8, 10, 29 }; 
+
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -31,13 +35,19 @@ public class GameManager : MonoBehaviour
     {
         if (character == "CharacterA")
         {
-            scoreA++; 
+            scoreA++;
             characterAScoreText.text = scoreA.ToString();
         }
         else if (character == "CharacterB")
         {
-            scoreB++; 
+            scoreB++;
             characterBScoreText.text = scoreB.ToString();
+        }
+
+        if (comboIndex < comboStages.Count && (scoreA + scoreB) == comboStages[comboIndex] && !comboActive)
+        {
+            StartComboPhase(comboIndex);
+            comboIndex++; 
         }
 
         CheckWinCondition();
@@ -74,5 +84,53 @@ public class GameManager : MonoBehaviour
         character.ResetHealth();
 
         Destroy(respawnEffect, 0.5f);
+    }
+
+    private void StartComboPhase(int comboLevel)
+    {
+        comboActive = true;
+        Debug.Log($"Combo Phase {comboLevel + 1} Started!");
+
+        CharacterAMovement characterA = FindObjectOfType<CharacterAMovement>();
+        CharacterBMovement characterB = FindObjectOfType<CharacterBMovement>();
+        CharacterAttack[] attacks = FindObjectsOfType<CharacterAttack>();
+
+        if (characterA != null) characterA.StartCombo();
+        if (characterB != null) characterB.StartCombo();
+        foreach (var attack in attacks)
+        {
+            attack.enabled = false;
+        }
+
+        CombinationInput[] combinationInputs = FindObjectsOfType<CombinationInput>();
+        foreach (var input in combinationInputs)
+        {
+            input.StartCombo(comboLevel);
+        }
+
+        Invoke(nameof(EndComboPhase), 5f);
+    }
+
+    private void EndComboPhase()
+    {
+        comboActive = false;
+        Debug.Log("Combo Phase Ended!");
+
+        CharacterAMovement characterA = FindObjectOfType<CharacterAMovement>();
+        CharacterBMovement characterB = FindObjectOfType<CharacterBMovement>();
+        CharacterAttack[] attacks = FindObjectsOfType<CharacterAttack>();
+
+        if (characterA != null) characterA.EndCombo();
+        if (characterB != null) characterB.EndCombo();
+        foreach (var attack in attacks)
+        {
+            attack.enabled = true;
+        }
+
+        CombinationInput[] combinationInputs = FindObjectsOfType<CombinationInput>();
+        foreach (var input in combinationInputs)
+        {
+            input.EndCombo();
+        }
     }
 }

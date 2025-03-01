@@ -1,9 +1,24 @@
 fileFormatVersion: 2
-guid: 198ab7ee1702c7c44ba8e2e073c6d961
+guid: fc47a389c26bc9a4283bd6c481828c20
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Barrels
+    second: {fileID: 2100000, guid: 044d57386130797468d97ef59f06f3a4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cubes
+    second: {fileID: 2100000, guid: 3cb1d2b2f4a0944448662f86f8de9990, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Floor
+    second: {fileID: 2100000, guid: a4ecdf70d650a774f9ffbbddccb38532, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

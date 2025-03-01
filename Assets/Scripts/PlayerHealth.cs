@@ -11,8 +11,7 @@ public class PlayerHealth : MonoBehaviour
 
     void Start()
     {
-        currentHealth = maxHealth;
-        UpdateHealthUI();
+        ResetHealth();
     }
 
     public void TakeDamage(int amount)
@@ -33,29 +32,30 @@ public class PlayerHealth : MonoBehaviour
 
         for (int i = 0; i < healthSegments.Length; i++)
         {
-            if (i < activeSegments)
-                healthSegments[i].enabled = true;
-            else
-                healthSegments[i].enabled = false;
+            healthSegments[i].enabled = i < activeSegments;
         }
     }
 
     void Die()
     {
         Debug.Log(gameObject.name + " died!");
-        Vector3 deathPosition = transform.position;
 
         if (gameObject.CompareTag("CharacterA"))
         {
-            GameManager.instance.AddScore("CharacterA");
-            GameManager.instance.RespawnCharacter("CharacterA", deathPosition);
+            GameManager.instance.AddScore("CharacterB"); 
         }
         else if (gameObject.CompareTag("CharacterB"))
         {
-            GameManager.instance.AddScore("CharacterB");
-            GameManager.instance.RespawnCharacter("CharacterB", deathPosition);
+            GameManager.instance.AddScore("CharacterA"); 
         }
 
-        Destroy(gameObject); 
+        gameObject.SetActive(false);
+        GameManager.instance.RespawnCharacter(this);
+    }
+
+    public void ResetHealth()
+    {
+        currentHealth = maxHealth;
+        UpdateHealthUI();
     }
 }

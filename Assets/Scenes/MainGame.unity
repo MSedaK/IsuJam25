@@ -7458,6 +7458,26 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.046448633
       objectReference: {fileID: 0}
+    - target: {fileID: 767807000478130192, guid: 2d58f6e3d415d5b40bd718daad0c1372,
+        type: 3}
+      propertyPath: m_Height
+      value: 1.6989379
+      objectReference: {fileID: 0}
+    - target: {fileID: 767807000478130192, guid: 2d58f6e3d415d5b40bd718daad0c1372,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 0.8636801
+      objectReference: {fileID: 0}
+    - target: {fileID: 947221173056412471, guid: 2d58f6e3d415d5b40bd718daad0c1372,
+        type: 3}
+      propertyPath: runSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 947221173056412471, guid: 2d58f6e3d415d5b40bd718daad0c1372,
+        type: 3}
+      propertyPath: walkSpeed
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 975907206168017626, guid: 2d58f6e3d415d5b40bd718daad0c1372,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8212,6 +8232,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0.115784615
+      objectReference: {fileID: 0}
+    - target: {fileID: 4197494272612961027, guid: 2d58f6e3d415d5b40bd718daad0c1372,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 1.01
       objectReference: {fileID: 0}
     - target: {fileID: 4759784392922769161, guid: 2d58f6e3d415d5b40bd718daad0c1372,
         type: 3}
@@ -9140,6 +9165,16 @@ PrefabInstance:
       propertyPath: healthSegments.Array.data[9]
       value: 
       objectReference: {fileID: 1420812030}
+    - target: {fileID: 6316003202037750700, guid: 6892ed8eadf9a174cba58393db8f55ac,
+        type: 3}
+      propertyPath: runSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6316003202037750700, guid: 6892ed8eadf9a174cba58393db8f55ac,
+        type: 3}
+      propertyPath: walkSpeed
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7822590070702948790, guid: 6892ed8eadf9a174cba58393db8f55ac,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -9215,6 +9250,12 @@ PrefabInstance:
       propertyPath: shakeDuration
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9013785296235439873, guid: 6892ed8eadf9a174cba58393db8f55ac,
+        type: 3}
+      propertyPath: sphereA_Prefab
+      value: 
+      objectReference: {fileID: 1314945738539566, guid: 32c9fd11a72259d45aa26ae41c34c5aa,
+        type: 3}
     - target: {fileID: 9013785296235439873, guid: 6892ed8eadf9a174cba58393db8f55ac,
         type: 3}
       propertyPath: cameraTransform

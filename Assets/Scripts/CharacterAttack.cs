@@ -7,7 +7,6 @@ public class CharacterAttack : MonoBehaviour
 {
     public GameObject sphereA_Prefab;
     public GameObject sphereB_Prefab;
-    public GroundSlash groundSlashPrefab; 
     public Transform firePoint;
     public float stoneSpeed = 10f;
     private Animator animator;
@@ -43,26 +42,15 @@ public class CharacterAttack : MonoBehaviour
     {
         if (gameObject.CompareTag("CharacterA"))
         {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                FireGroundSlash(); 
-            }
-
+            if (Input.GetKeyDown(KeyCode.E)) StartAttack(1, "AttackNormal", sphereA_Prefab, "CharacterB", normalAttackImage);
             if (Input.GetKeyDown(KeyCode.Q) && isStrongUnlocked && !isStrongUsed)
-            {
                 StartAttack(3, "AttackStrong", sphereA_Prefab, "CharacterB", strongAttackImage, true);
-            }
         }
         else if (gameObject.CompareTag("CharacterB"))
         {
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                StartAttack(1, "AttackNormal", sphereB_Prefab, "CharacterA", normalAttackImage);
-            }
+            if (Input.GetKeyDown(KeyCode.K)) StartAttack(1, "AttackNormal", sphereB_Prefab, "CharacterA", normalAttackImage);
             if (Input.GetKeyDown(KeyCode.L) && isStrongUnlocked && !isStrongUsed)
-            {
                 StartAttack(3, "AttackStrong", sphereB_Prefab, "CharacterA", strongAttackImage, true);
-            }
         }
     }
 
@@ -105,19 +93,6 @@ public class CharacterAttack : MonoBehaviour
             }
         }
         queuedStones = 0;
-    }
-
-    void FireGroundSlash()
-    {
-        if (groundSlashPrefab != null && firePoint != null)
-        {
-            animator.SetTrigger("AttackNormal"); 
-
-            GroundSlash newSlash = Instantiate(groundSlashPrefab, firePoint.position, Quaternion.identity);
-            newSlash.Initialize(firePoint); 
-
-            Debug.Log(gameObject.name + " used GroundSlash!"); 
-        }
     }
 
     IEnumerator CameraShakeEffect()

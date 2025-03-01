@@ -4641,6 +4641,8 @@ GameObject:
   - component: {fileID: 4825948614923682}
   - component: {fileID: 198345217066185332}
   - component: {fileID: 199528594520767084}
+  - component: {fileID: 3753411791384491478}
+  - component: {fileID: 5156817195635252184}
   m_Layer: 0
   m_Name: EarthShatter
   m_TagString: Untagged
@@ -9546,6 +9548,41 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!65 &3753411791384491478
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314945738539566}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10.455365, y: 11.364853, z: 47.231102}
+  m_Center: {x: 1.2961643, y: 5.682382, z: 24.632683}
+--- !u!114 &5156817195635252184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314945738539566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22a087292e736ec4a912c3e1b058441e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 25
+  targetTag: CharacterB
 --- !u!1 &1584802242839310
 GameObject:
   m_ObjectHideFlags: 0

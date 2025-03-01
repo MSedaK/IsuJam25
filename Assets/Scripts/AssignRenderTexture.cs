@@ -4,6 +4,8 @@ using UnityEngine;
 public class AssignRenderTexture : MonoBehaviour
 {
     public RenderTexture rt;
+    public RenderTexture rt2;
+    public RenderTexture rt3;
 
     void Start()
     {

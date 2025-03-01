@@ -25,6 +25,8 @@ public class CharacterAttack : MonoBehaviour
     private Vector3 originalCameraPosition;
     public float cameraShakeAmount = 0.2f;
     public float shakeDuration = 0.5f;
+    public float cameraZoomSpeed = 2f; 
+    public float zoomDistance = 2f; 
 
     void Start()
     {
@@ -131,16 +133,49 @@ public class CharacterAttack : MonoBehaviour
         isStrongUsed = false;
         UpdateSkillUI();
 
-        Animator thisAnimator = GetComponent<Animator>(); 
-
-        if (thisAnimator != null) 
+        if (gameObject.CompareTag("CharacterA") || gameObject.CompareTag("CharacterB"))
         {
-            thisAnimator.SetTrigger("Victory"); 
+            animator.SetTrigger("Victory");
             Debug.Log(gameObject.name + " unlocked Strong Attack and played Victory animation!");
+
+            StartCoroutine(ZoomToCharacter());
         }
     }
 
+    IEnumerator ZoomToCharacter()
+    {
+        Vector3 targetPosition = transform.position + transform.forward * -zoomDistance + Vector3.up * 1.5f;
+        Vector3 startPosition = cameraTransform.position;
 
+        Quaternion startRotation = cameraTransform.rotation;
+        Quaternion targetRotation = Quaternion.Euler(cameraTransform.eulerAngles.x - 10f, cameraTransform.eulerAngles.y, cameraTransform.eulerAngles.z); 
+
+        float elapsedTime = 0f;
+        while (elapsedTime < 1f)
+        {
+            cameraTransform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime * cameraZoomSpeed);
+            cameraTransform.rotation = Quaternion.Lerp(startRotation, targetRotation, elapsedTime * cameraZoomSpeed); 
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length); 
+
+        StartCoroutine(ResetCameraPosition(startRotation));
+    }
+
+    IEnumerator ResetCameraPosition(Quaternion originalRotation)
+    {
+        float elapsedTime = 0f;
+        Vector3 startPosition = cameraTransform.position;
+        while (elapsedTime < 1f)
+        {
+            cameraTransform.position = Vector3.Lerp(startPosition, originalCameraPosition, elapsedTime * cameraZoomSpeed);
+            cameraTransform.rotation = Quaternion.Lerp(cameraTransform.rotation, originalRotation, elapsedTime * cameraZoomSpeed);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+    }
 
     public void ResetStrongAttack()
     {
@@ -148,8 +183,6 @@ public class CharacterAttack : MonoBehaviour
         isStrongUsed = false;
         UpdateSkillUI();
         Debug.Log(gameObject.name + " lost Strong Attack due to new combo phase!");
-
-        animator.SetTrigger("Victory");
     }
 
     void UpdateSkillUI()

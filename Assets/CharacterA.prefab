@@ -362,7 +362,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comboText: {fileID: 0}
   comboTime: 4
-  health: 100
 --- !u!114 &6316003202037750700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -396,6 +395,14 @@ MonoBehaviour:
     type: 3}
   firePoint: {fileID: 2308671596748800917}
   stoneSpeed: 10
+  normalAttackImage: {fileID: 0}
+  strongAttackImage: {fileID: 0}
+  fadeDuration: 1.5
+  cameraTransform: {fileID: 0}
+  cameraShakeAmount: 0.2
+  shakeDuration: 0.5
+  cameraZoomSpeed: 2
+  zoomDistance: 2
 --- !u!114 &2818674924735787868
 MonoBehaviour:
   m_ObjectHideFlags: 0

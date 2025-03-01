@@ -130,8 +130,17 @@ public class CharacterAttack : MonoBehaviour
         isStrongUnlocked = true;
         isStrongUsed = false;
         UpdateSkillUI();
-        Debug.Log(gameObject.name + " unlocked Strong Attack!");
+
+        Animator thisAnimator = GetComponent<Animator>(); 
+
+        if (thisAnimator != null) 
+        {
+            thisAnimator.SetTrigger("Victory"); 
+            Debug.Log(gameObject.name + " unlocked Strong Attack and played Victory animation!");
+        }
     }
+
+
 
     public void ResetStrongAttack()
     {
@@ -139,6 +148,8 @@ public class CharacterAttack : MonoBehaviour
         isStrongUsed = false;
         UpdateSkillUI();
         Debug.Log(gameObject.name + " lost Strong Attack due to new combo phase!");
+
+        animator.SetTrigger("Victory");
     }
 
     void UpdateSkillUI()

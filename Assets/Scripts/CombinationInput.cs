@@ -115,7 +115,7 @@ public class CombinationInput : MonoBehaviour
         Debug.Log("Combo Ended!");
     }
 
-    public void CheckInput(string input)
+    void CheckInput(string input)
     {
         if (!isComboActive || comboCompleted) return;
 
@@ -132,8 +132,14 @@ public class CombinationInput : MonoBehaviour
                 comboCompleted = true;
                 Debug.Log("Combo Completed Successfully!");
                 comboText.text = "<color=green>COMBO SUCCESS!</color>";
+
+                CharacterAttack attackScript = GetComponent<CharacterAttack>();
+                if (attackScript != null)
+                {
+                    attackScript.UnlockStrongAttack();
+                }
+
                 ApplyHealthChange(100);
-                PlayVictoryAnimation(); 
                 EndCombo();
             }
         }
@@ -163,7 +169,7 @@ public class CombinationInput : MonoBehaviour
     {
         if (animator != null)
         {
-            animator.ResetTrigger("Victory"); 
+            animator.ResetTrigger("Victory"); // Önce Trigger’ı sıfırlıyoruz
             animator.Play("Victory", -1, 0f); 
             Debug.Log("Victory Animation Triggered Instantly!");
         }

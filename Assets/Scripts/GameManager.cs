@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
 
     private bool comboActive = false;
     private int comboIndex = 0;
-    private List<int> comboStages = new List<int> { 5, 8, 10, 29 }; 
+    private List<int> comboStages = new List<int> { 5, 15, 22, 29 }; 
 
     private void Awake()
     {
@@ -97,9 +97,14 @@ public class GameManager : MonoBehaviour
 
         if (characterA != null) characterA.StartCombo();
         if (characterB != null) characterB.StartCombo();
+
         foreach (var attack in attacks)
         {
             attack.enabled = false;
+        }
+        foreach (var attack in attacks)
+        {
+            attack.ResetStrongAttack(); 
         }
 
         CombinationInput[] combinationInputs = FindObjectsOfType<CombinationInput>();

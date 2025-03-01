@@ -15,11 +15,16 @@ public class CharacterAttack : MonoBehaviour
     private string targetTag;
 
     public Image normalAttackImage;
-    public float fadeDuration = 1.5f; 
+    public Image strongAttackImage;
+    public float fadeDuration = 1.5f;
+
+    private bool isStrongUnlocked = false; 
+    private bool isStrongUsed = false; 
 
     void Start()
     {
         animator = GetComponent<Animator>();
+        UpdateSkillUI(); 
     }
 
     void Update()
@@ -27,14 +32,12 @@ public class CharacterAttack : MonoBehaviour
         if (gameObject.CompareTag("CharacterA"))
         {
             if (Input.GetKeyDown(KeyCode.E)) StartAttack(1, "AttackNormal", sphereA_Prefab, "CharacterB", normalAttackImage);
-            if (Input.GetKeyDown(KeyCode.Q)) StartAttack(3, "AttackStrong", sphereA_Prefab, "CharacterB", null);
-            if (Input.GetKeyDown(KeyCode.X)) StartAttack(5, "AttackRare", sphereA_Prefab, "CharacterB", null);
+            if (Input.GetKeyDown(KeyCode.Q) && isStrongUnlocked) StartAttack(3, "AttackStrong", sphereA_Prefab, "CharacterB", strongAttackImage);
         }
         else if (gameObject.CompareTag("CharacterB"))
         {
             if (Input.GetKeyDown(KeyCode.K)) StartAttack(1, "AttackNormal", sphereB_Prefab, "CharacterA", normalAttackImage);
-            if (Input.GetKeyDown(KeyCode.L)) StartAttack(3, "AttackStrong", sphereB_Prefab, "CharacterA", null);
-            if (Input.GetKeyDown(KeyCode.M)) StartAttack(5, "AttackRare", sphereB_Prefab, "CharacterA", null);
+            if (Input.GetKeyDown(KeyCode.L) && isStrongUnlocked) StartAttack(3, "AttackStrong", sphereB_Prefab, "CharacterA", strongAttackImage);
         }
     }
 
@@ -43,21 +46,46 @@ public class CharacterAttack : MonoBehaviour
         queuedStones = stoneCount;
         currentStonePrefab = stonePrefab;
         targetTag = target;
+
+        Debug.Log(gameObject.name + " Attack Triggered: " + animationName);
+
         animator.SetTrigger(animationName);
 
         if (skillImage != null)
         {
             StartCoroutine(FadeSkillIcon(skillImage));
         }
+
+        if (animationName == "AttackStrong")
+        {
+            isStrongUsed = true;
+        }
     }
 
     public void FireStones()
     {
+        Debug.Log(gameObject.name + " FireStones Called!");
+
+        if (queuedStones <= 0 || currentStonePrefab == null)
+        {
+            Debug.LogWarning("No stones to fire or prefab is missing!");
+            return;
+        }
+
         for (int i = 0; i < queuedStones; i++)
         {
             GameObject stone = Instantiate(currentStonePrefab, firePoint.position, firePoint.rotation);
             Rigidbody rb = stone.GetComponent<Rigidbody>();
-            rb.velocity = transform.forward * stoneSpeed;
+
+            if (rb != null)
+            {
+                rb.velocity = transform.forward * stoneSpeed;
+                Debug.Log(gameObject.name + " Fired Stone!");
+            }
+            else
+            {
+                Debug.LogError("Rigidbody missing on stone prefab!");
+            }
 
             Stone stoneScript = stone.GetComponent<Stone>();
             if (stoneScript != null)
@@ -68,14 +96,43 @@ public class CharacterAttack : MonoBehaviour
         queuedStones = 0;
     }
 
+
     IEnumerator FadeSkillIcon(Image skillImage)
     {
         Color originalColor = skillImage.color;
         Color fadedColor = originalColor;
-        fadedColor.a = 0.3f; 
+        fadedColor.a = 0.3f;
 
         skillImage.color = fadedColor;
-        yield return new WaitForSeconds(fadeDuration); 
-        skillImage.color = originalColor; 
+        yield return new WaitForSeconds(fadeDuration);
+        skillImage.color = originalColor;
+    }
+
+    public void UnlockStrongAttack()
+    {
+        isStrongUnlocked = true;
+        isStrongUsed = false; 
+        UpdateSkillUI();
+        Debug.Log(gameObject.name + " unlocked Strong Attack!");
+    }
+
+    public void ResetStrongAttack()
+    {
+        if (!isStrongUsed) 
+        {
+            isStrongUnlocked = false;
+            UpdateSkillUI();
+            Debug.Log(gameObject.name + " lost Strong Attack due to inactivity!");
+        }
+    }
+
+    void UpdateSkillUI()
+    {
+        if (strongAttackImage != null)
+        {
+            Color color = strongAttackImage.color;
+            color.a = isStrongUnlocked ? 1f : 0.3f;
+            strongAttackImage.color = color;
+        }
     }
 }

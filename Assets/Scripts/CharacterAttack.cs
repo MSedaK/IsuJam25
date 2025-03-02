@@ -17,9 +17,11 @@ public class CharacterAttack : MonoBehaviour
     public Image normalAttackImage;
     public Image strongAttackImage;
     public float fadeDuration = 1.5f;
+    public Image strongAttackExclamation;
 
     private bool isStrongUnlocked = false;
     private bool isStrongUsed = false;
+    private Coroutine exclamationCoroutine;
 
     public Transform cameraTransform;
     private Vector3 originalCameraPosition;
@@ -71,6 +73,17 @@ public class CharacterAttack : MonoBehaviour
         if (isStrong)
         {
             isStrongUsed = true;
+
+            if (strongAttackExclamation != null)
+            {
+                strongAttackExclamation.gameObject.SetActive(false);
+                if (exclamationCoroutine != null)
+                {
+                    StopCoroutine(exclamationCoroutine);
+                    exclamationCoroutine = null;
+                }
+            }
+
             StartCoroutine(CameraShakeEffect());
             UpdateSkillUI();
         }
@@ -118,14 +131,30 @@ public class CharacterAttack : MonoBehaviour
 
     IEnumerator FadeSkillIcon(Image skillImage)
     {
+        float fastFadeDuration = 0.3f;  
         Color originalColor = skillImage.color;
         Color fadedColor = originalColor;
-        fadedColor.a = 0.3f;
+        fadedColor.a = 0.3f; 
 
-        skillImage.color = fadedColor;
-        yield return new WaitForSeconds(fadeDuration);
-        skillImage.color = originalColor;
+        float elapsedTime = 0f;
+        while (elapsedTime < fastFadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            skillImage.color = Color.Lerp(originalColor, fadedColor, elapsedTime / fastFadeDuration);
+            yield return null;
+        }
+
+        elapsedTime = 0f;
+        while (elapsedTime < fastFadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            skillImage.color = Color.Lerp(fadedColor, originalColor, elapsedTime / fastFadeDuration);
+            yield return null;
+        }
+
+        skillImage.color = originalColor; 
     }
+
 
     public void UnlockStrongAttack()
     {
@@ -139,6 +168,15 @@ public class CharacterAttack : MonoBehaviour
             Debug.Log(gameObject.name + " unlocked Strong Attack and played Victory animation!");
             
             StartCoroutine(ZoomToCharacter());
+        }
+
+        if (strongAttackExclamation != null)
+        {
+            strongAttackExclamation.gameObject.SetActive(true);
+            if (exclamationCoroutine == null)
+            {
+                exclamationCoroutine = StartCoroutine(ExclamationShake());
+            }
         }
     }
 
@@ -175,14 +213,35 @@ public class CharacterAttack : MonoBehaviour
         }
     }
 
+    IEnumerator ExclamationShake()
+    {
+        Vector3 originalPos = strongAttackExclamation.rectTransform.anchoredPosition;
 
-
+        while (true)
+        {
+            float shakeAmount = 5f;
+            strongAttackExclamation.rectTransform.anchoredPosition = originalPos + new Vector3(Random.Range(-shakeAmount, shakeAmount), Random.Range(-shakeAmount, shakeAmount), 0);
+            yield return new WaitForSeconds(0.05f);
+            strongAttackExclamation.rectTransform.anchoredPosition = originalPos;
+            yield return new WaitForSeconds(0.05f);
+        }
+    }
     public void ResetStrongAttack()
     {
         isStrongUnlocked = false;
         isStrongUsed = false;
         UpdateSkillUI();
         Debug.Log(gameObject.name + " lost Strong Attack due to new combo phase!");
+
+        if (strongAttackExclamation != null)
+        {
+            strongAttackExclamation.gameObject.SetActive(false);
+            if (exclamationCoroutine != null)
+            {
+                StopCoroutine(exclamationCoroutine);
+                exclamationCoroutine = null;
+            }
+        }
     }
 
     void UpdateSkillUI()

@@ -16,4 +16,10 @@ public class PlayButtonHandler : MonoBehaviour
         SceneManager.LoadScene("MainGame");
     }
 
+
+    public void MenuGame()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
 }

@@ -1565,9 +1565,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 109667506}
-        m_TargetAssemblyTypeName: CreditsController, Assembly-CSharp
-        m_MethodName: QuitGame
+      - m_Target: {fileID: 527931543}
+        m_TargetAssemblyTypeName: PlayButtonHandler, Assembly-CSharp
+        m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3025,7 +3025,7 @@ GameObject:
   - component: {fileID: 1741843443}
   - component: {fileID: 1741843442}
   m_Layer: 5
-  m_Name: r
+  m_Name: UpperButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

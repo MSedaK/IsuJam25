@@ -9021,6 +9021,11 @@ PrefabInstance:
       objectReference: {fileID: 1788022111}
     - target: {fileID: 6831458245145703133, guid: 2d58f6e3d415d5b40bd718daad0c1372,
         type: 3}
+      propertyPath: stoneSpeed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831458245145703133, guid: 2d58f6e3d415d5b40bd718daad0c1372,
+        type: 3}
       propertyPath: zoomDistance
       value: 8
       objectReference: {fileID: 0}

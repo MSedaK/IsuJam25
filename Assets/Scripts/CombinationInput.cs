@@ -19,7 +19,7 @@ public class CombinationInput : MonoBehaviour
     private PlayerHealth playerHealth;
     private Animator animator; 
 
-    private string[] combosA = { "WASD", "DSAW", "AWDS", "SDWA" };
+    private string[] combosA = { "WASDWA", "DSAWDS", "AWDSAW", "SDWASD" };
     private string[] combosB = { "↑↓←→", "→←↓↑", "↓→↑←", "←↑→↓" };
     private string currentCombo;
 

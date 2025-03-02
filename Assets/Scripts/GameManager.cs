@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 
     public int scoreA = 0;
     public int scoreB = 0;
-    public int winningScore = 30;
+    public int winningScore = 10;
 
     public TextMeshProUGUI characterAScoreText;
     public TextMeshProUGUI characterBScoreText;
@@ -26,10 +26,12 @@ public class GameManager : MonoBehaviour
     public Transform spawnPointB;
 
     public AudioSource backgroundMusic;
+    public AudioSource sfxAudioSource; 
+    public AudioClip iceTransitionSFX; 
 
     private bool comboActive = false;
     private int comboIndex = 0;
-    private List<int> comboStages = new List<int> { 5, 15, 22, 29 };
+    private List<int> comboStages = new List<int> { 5, 8, 10, 18 };
     private bool isPaused = false;
 
     public GameObject sandFloor;
@@ -56,7 +58,7 @@ public class GameManager : MonoBehaviour
 
         if (globalVolume != null && globalVolume.profile.TryGet(out vignette))
         {
-            vignette.intensity.value = 0f;
+            vignette.intensity.value = 0f; 
         }
     }
 
@@ -124,7 +126,7 @@ public class GameManager : MonoBehaviour
 
         if (vignette != null)
         {
-            vignette.intensity.value = 0.5f; 
+            vignette.intensity.value = 0.5f;
         }
 
         Invoke(nameof(SwitchToIceFloor), 0.3f);
@@ -196,6 +198,8 @@ public class GameManager : MonoBehaviour
         sandFloor.SetActive(false);
         iceFloor.SetActive(true);
         Debug.Log("Switched to Ice Floor!");
+
+        PlayIceTransitionSFX();
     }
 
     private void SwitchToSandFloor()
@@ -203,6 +207,16 @@ public class GameManager : MonoBehaviour
         sandFloor.SetActive(true);
         iceFloor.SetActive(false);
         Debug.Log("Switched to Sand Floor!");
+
+        PlayIceTransitionSFX();
+    }
+
+    private void PlayIceTransitionSFX()
+    {
+        if (sfxAudioSource != null && iceTransitionSFX != null)
+        {
+            sfxAudioSource.PlayOneShot(iceTransitionSFX);
+        }
     }
 
     public void TogglePauseGame()

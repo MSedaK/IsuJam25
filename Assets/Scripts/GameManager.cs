@@ -60,13 +60,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            TogglePauseGame();
-        }
-    }
+ 
 
     public void AddScore(string character)
     {

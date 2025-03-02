@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using TMPro;
 
 public class GameManager : MonoBehaviour
@@ -30,8 +32,11 @@ public class GameManager : MonoBehaviour
     private List<int> comboStages = new List<int> { 5, 15, 22, 29 };
     private bool isPaused = false;
 
-    public GameObject sandFloor; 
-    public GameObject iceFloor; 
+    public GameObject sandFloor;
+    public GameObject iceFloor;
+
+    public Volume globalVolume;
+    private Vignette vignette;
 
     private void Awake()
     {
@@ -48,6 +53,11 @@ public class GameManager : MonoBehaviour
 
         sandFloor.SetActive(true);
         iceFloor.SetActive(false);
+
+        if (globalVolume != null && globalVolume.profile.TryGet(out vignette))
+        {
+            vignette.intensity.value = 0f;
+        }
     }
 
     private void Update()
@@ -118,7 +128,12 @@ public class GameManager : MonoBehaviour
         comboActive = true;
         Debug.Log($"Combo Phase {comboLevel + 1} Started!");
 
-        Invoke(nameof(SwitchToIceFloor), 0.5f);
+        if (vignette != null)
+        {
+            vignette.intensity.value = 0.5f; 
+        }
+
+        Invoke(nameof(SwitchToIceFloor), 0.3f);
 
         CharacterAMovement characterA = FindObjectOfType<CharacterAMovement>();
         CharacterBMovement characterB = FindObjectOfType<CharacterBMovement>();
@@ -158,6 +173,11 @@ public class GameManager : MonoBehaviour
         Debug.Log("Combo Phase Ended!");
 
         SwitchToSandFloor();
+
+        if (vignette != null)
+        {
+            vignette.intensity.value = 0f; 
+        }
 
         CharacterAMovement characterA = FindObjectOfType<CharacterAMovement>();
         CharacterBMovement characterB = FindObjectOfType<CharacterBMovement>();

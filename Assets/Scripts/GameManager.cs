@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 
     public int scoreA = 0;
     public int scoreB = 0;
-    public int winningScore = 30;
+    public int winningScore = 10;
 
     public TextMeshProUGUI characterAScoreText;
     public TextMeshProUGUI characterBScoreText;
@@ -26,12 +26,12 @@ public class GameManager : MonoBehaviour
     public Transform spawnPointB;
 
     public AudioSource backgroundMusic;
-    public AudioSource sfxAudioSource;  // Tek seferlik ses efekti için
-    public AudioClip iceTransitionSFX;  // Buz geçiþ sesi
+    public AudioSource sfxAudioSource; 
+    public AudioClip iceTransitionSFX; 
 
     private bool comboActive = false;
     private int comboIndex = 0;
-    private List<int> comboStages = new List<int> { 5, 15, 22, 29 };
+    private List<int> comboStages = new List<int> { 5, 8, 10, 18 };
     private bool isPaused = false;
 
     public GameObject sandFloor;

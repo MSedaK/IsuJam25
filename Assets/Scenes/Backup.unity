@@ -7271,16 +7271,16 @@ MonoBehaviour:
   characterAScoreText: {fileID: 311092388}
   characterBScoreText: {fileID: 159742789}
   winnerText: {fileID: 1303913185}
-  characterAPrefab: {fileID: 9221854025937551965, guid: 6892ed8eadf9a174cba58393db8f55ac,
-    type: 3}
-  characterBPrefab: {fileID: 5279896632000544179, guid: 2d58f6e3d415d5b40bd718daad0c1372,
-    type: 3}
+  characterAPrefab: {fileID: 5685022870710951329}
+  characterBPrefab: {fileID: 1230081352464829321}
   respawnVFXPrefab: {fileID: 8280342101099947306, guid: d97fa6e342f447d438f035284062286d,
     type: 3}
   pauseMenuPanel: {fileID: 604463031}
   spawnPointA: {fileID: 736170584}
   spawnPointB: {fileID: 1698784819}
   backgroundMusic: {fileID: 1554922935}
+  sfxAudioSource: {fileID: 1554922935}
+  iceTransitionSFX: {fileID: 8300000, guid: e84a78ead4bd44b4aa0a3bd894505fa4, type: 3}
   sandFloor: {fileID: 1406350195}
   iceFloor: {fileID: 1720063048}
   globalVolume: {fileID: 1540272477}
@@ -7401,7 +7401,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 5685022870710951328}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 5685022870710951329}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14440c1a8b059f64eb6c48a61e14fdb2, type: 3}
@@ -8131,7 +8131,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1230081352464829320}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1230081352464829321}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14440c1a8b059f64eb6c48a61e14fdb2, type: 3}
@@ -10250,6 +10250,11 @@ PrefabInstance:
       propertyPath: walkSpeed
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 947221173056412471, guid: 2d58f6e3d415d5b40bd718daad0c1372,
+        type: 3}
+      propertyPath: rotationSpeed
+      value: 35
+      objectReference: {fileID: 0}
     - target: {fileID: 975907206168017626, guid: 2d58f6e3d415d5b40bd718daad0c1372,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -11874,6 +11879,12 @@ PrefabInstance:
       addedObject: {fileID: 1108876562}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d58f6e3d415d5b40bd718daad0c1372, type: 3}
+--- !u!1 &1230081352464829321 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5279896632000544179, guid: 2d58f6e3d415d5b40bd718daad0c1372,
+    type: 3}
+  m_PrefabInstance: {fileID: 1230081352464829320}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5685022870710951328
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11971,6 +11982,11 @@ PrefabInstance:
         type: 3}
       propertyPath: walkSpeed
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6316003202037750700, guid: 6892ed8eadf9a174cba58393db8f55ac,
+        type: 3}
+      propertyPath: rotationSpeed
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 7822590070702948790, guid: 6892ed8eadf9a174cba58393db8f55ac,
         type: 3}
@@ -12104,6 +12120,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6892ed8eadf9a174cba58393db8f55ac, type: 3}
+--- !u!1 &5685022870710951329 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9221854025937551965, guid: 6892ed8eadf9a174cba58393db8f55ac,
+    type: 3}
+  m_PrefabInstance: {fileID: 5685022870710951328}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

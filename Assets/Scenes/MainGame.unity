@@ -3016,7 +3016,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &714359636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4492,7 +4492,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1093388864
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9015,6 +9015,11 @@ PrefabInstance:
       objectReference: {fileID: 1108876562}
     - target: {fileID: 6831458245145703133, guid: 2d58f6e3d415d5b40bd718daad0c1372,
         type: 3}
+      propertyPath: zoomDistance
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831458245145703133, guid: 2d58f6e3d415d5b40bd718daad0c1372,
+        type: 3}
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 330585546}
@@ -9697,8 +9702,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9013785296235439873, guid: 6892ed8eadf9a174cba58393db8f55ac,
         type: 3}
+      propertyPath: zoomDistance
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9013785296235439873, guid: 6892ed8eadf9a174cba58393db8f55ac,
+        type: 3}
       propertyPath: shakeDuration
-      value: 0.7
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 9013785296235439873, guid: 6892ed8eadf9a174cba58393db8f55ac,
         type: 3}
@@ -9711,6 +9721,11 @@ PrefabInstance:
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 330585546}
+    - target: {fileID: 9013785296235439873, guid: 6892ed8eadf9a174cba58393db8f55ac,
+        type: 3}
+      propertyPath: cameraShakeAmount
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 9013785296235439873, guid: 6892ed8eadf9a174cba58393db8f55ac,
         type: 3}
       propertyPath: groundSlashPrefab

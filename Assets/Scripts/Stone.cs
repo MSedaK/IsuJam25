@@ -6,10 +6,13 @@ public class Stone : MonoBehaviour
 {
     public int damage = 10;
     public string targetTag;
+    public GameObject impactVFX; 
+    private Collider stoneCollider; 
 
     void Start()
     {
-        Destroy(gameObject, 3f); 
+        stoneCollider = GetComponent<Collider>();
+        Destroy(gameObject, 3f);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -22,7 +25,15 @@ public class Stone : MonoBehaviour
                 playerHealth.TakeDamage(damage);
             }
 
-            Destroy(gameObject); 
+            if (stoneCollider != null)
+            {
+                stoneCollider.enabled = false;
+            }
+
+            if (impactVFX != null)
+            {
+                Instantiate(impactVFX, transform.position, Quaternion.identity);
+            }
         }
     }
 }

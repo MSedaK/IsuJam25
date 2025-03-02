@@ -102,9 +102,16 @@ public class GameManager : MonoBehaviour
         {
             attack.enabled = false;
         }
+
         foreach (var attack in attacks)
         {
-            attack.ResetStrongAttack(); 
+            attack.ResetStrongAttack();
+        }
+
+        CombinationUI combinationUI = FindObjectOfType<CombinationUI>();
+        if (combinationUI != null)
+        {
+            combinationUI.StartCombo("QWE", "ASD"); 
         }
 
         CombinationInput[] combinationInputs = FindObjectsOfType<CombinationInput>();
@@ -115,6 +122,7 @@ public class GameManager : MonoBehaviour
 
         Invoke(nameof(EndComboPhase), 5f);
     }
+
 
     private void EndComboPhase()
     {

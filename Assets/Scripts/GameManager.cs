@@ -18,17 +18,44 @@ public class GameManager : MonoBehaviour
     public GameObject characterAPrefab;
     public GameObject characterBPrefab;
     public GameObject respawnVFXPrefab;
+    public GameObject pauseMenuPanel;
 
     public Transform spawnPointA;
     public Transform spawnPointB;
 
+    public AudioSource backgroundMusic;
+
     private bool comboActive = false;
     private int comboIndex = 0;
-    private List<int> comboStages = new List<int> { 5, 15, 22, 29 }; 
+    private List<int> comboStages = new List<int> { 5, 15, 22, 29 };
+    private bool isPaused = false;
+
+    public GameObject sandFloor; 
+    public GameObject iceFloor; 
 
     private void Awake()
     {
         if (instance == null) instance = this;
+    }
+
+    private void Start()
+    {
+        if (backgroundMusic != null)
+        {
+            backgroundMusic.loop = true;
+            backgroundMusic.Play();
+        }
+
+        sandFloor.SetActive(true);
+        iceFloor.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePauseGame();
+        }
     }
 
     public void AddScore(string character)
@@ -47,7 +74,7 @@ public class GameManager : MonoBehaviour
         if (comboIndex < comboStages.Count && (scoreA + scoreB) == comboStages[comboIndex] && !comboActive)
         {
             StartComboPhase(comboIndex);
-            comboIndex++; 
+            comboIndex++;
         }
 
         CheckWinCondition();
@@ -91,6 +118,8 @@ public class GameManager : MonoBehaviour
         comboActive = true;
         Debug.Log($"Combo Phase {comboLevel + 1} Started!");
 
+        Invoke(nameof(SwitchToIceFloor), 0.5f);
+
         CharacterAMovement characterA = FindObjectOfType<CharacterAMovement>();
         CharacterBMovement characterB = FindObjectOfType<CharacterBMovement>();
         CharacterAttack[] attacks = FindObjectsOfType<CharacterAttack>();
@@ -111,7 +140,7 @@ public class GameManager : MonoBehaviour
         CombinationUI combinationUI = FindObjectOfType<CombinationUI>();
         if (combinationUI != null)
         {
-            combinationUI.StartCombo("QWE", "ASD"); 
+            combinationUI.StartCombo("QWE", "ASD");
         }
 
         CombinationInput[] combinationInputs = FindObjectsOfType<CombinationInput>();
@@ -123,11 +152,12 @@ public class GameManager : MonoBehaviour
         Invoke(nameof(EndComboPhase), 5f);
     }
 
-
     private void EndComboPhase()
     {
         comboActive = false;
         Debug.Log("Combo Phase Ended!");
+
+        SwitchToSandFloor();
 
         CharacterAMovement characterA = FindObjectOfType<CharacterAMovement>();
         CharacterBMovement characterB = FindObjectOfType<CharacterBMovement>();
@@ -144,6 +174,36 @@ public class GameManager : MonoBehaviour
         foreach (var input in combinationInputs)
         {
             input.EndCombo();
+        }
+    }
+
+    private void SwitchToIceFloor()
+    {
+        sandFloor.SetActive(false);
+        iceFloor.SetActive(true);
+        Debug.Log("Switched to Ice Floor!");
+    }
+
+    private void SwitchToSandFloor()
+    {
+        sandFloor.SetActive(true);
+        iceFloor.SetActive(false);
+        Debug.Log("Switched to Sand Floor!");
+    }
+
+    public void TogglePauseGame()
+    {
+        isPaused = !isPaused;
+
+        if (isPaused)
+        {
+            Time.timeScale = 0;
+            pauseMenuPanel.SetActive(true);
+        }
+        else
+        {
+            Time.timeScale = 1;
+            pauseMenuPanel.SetActive(false);
         }
     }
 }
